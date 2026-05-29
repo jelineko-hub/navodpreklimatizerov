@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ako si spraviť vlastný web — návod pre klimatizérov</title>
+<style>
+  :root{
+    --modra:#0a6cff;
+    --modra-tmava:#0a4fb8;
+    --tyrkys:#16c2c2;
+    --tma:#0e1726;
+    --siva:#5b6b80;
+    --svetlo:#f4f8ff;
+    --karta:#ffffff;
+    --uspech:#1aa260;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--tma);
+    line-height:1.65;
+    background:var(--svetlo);
+  }
+  a{color:var(--modra)}
+
+  /* HLAVICKA */
+  header.hero{
+    background:linear-gradient(135deg,#0a6cff 0%,#16c2c2 100%);
+    color:#fff;
+    padding:70px 20px 90px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;left:0;right:0;bottom:-1px;height:60px;
+    background:var(--svetlo);
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;
+  }
+  .hero .znacka{font-size:14px;letter-spacing:3px;text-transform:uppercase;opacity:.9;font-weight:600}
+  .hero h1{font-size:clamp(28px,5vw,46px);margin:14px 0 16px;line-height:1.15}
+  .hero p{font-size:clamp(16px,2.5vw,20px);max-width:680px;margin:0 auto;opacity:.95}
+  .hero .snezinka{font-size:40px;display:block;margin-bottom:6px}
+
+  /* OBSAH */
+  main{max-width:840px;margin:0 auto;padding:10px 20px 60px}
+
+  .uvod{
+    background:var(--karta);
+    border-radius:16px;
+    padding:26px 28px;
+    margin:-40px auto 40px;
+    box-shadow:0 14px 40px rgba(10,76,184,.12);
+    position:relative;
+    z-index:2;
+  }
+  .uvod p{color:var(--siva);font-size:17px}
+  .uvod strong{color:var(--tma)}
+
+  /* KROKY */
+  .krok{
+    background:var(--karta);
+    border-radius:16px;
+    padding:30px 30px 26px;
+    margin-bottom:26px;
+    box-shadow:0 6px 22px rgba(14,23,38,.06);
+    border:1px solid #eaf0fb;
+  }
+  .krok-hlava{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+  .cislo{
+    flex:0 0 auto;
+    width:46px;height:46px;
+    background:linear-gradient(135deg,var(--modra),var(--tyrkys));
+    color:#fff;font-weight:700;font-size:20px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 5px 14px rgba(10,108,255,.35);
+  }
+  .krok h2{font-size:22px;line-height:1.25}
+  .krok h3{font-size:17px;margin:18px 0 6px;color:var(--modra-tmava)}
+  .krok p{margin:10px 0;color:#33425a}
+  .krok ul{margin:10px 0 10px 4px;padding-left:22px}
+  .krok li{margin:7px 0;color:#33425a}
+
+  .tip{
+    background:#eef9f3;
+    border-left:4px solid var(--uspech);
+    padding:12px 16px;border-radius:8px;margin:16px 0;
+    font-size:15px;color:#1f5740;
+  }
+  .pozor{
+    background:#fff6e9;
+    border-left:4px solid #f0a020;
+    padding:12px 16px;border-radius:8px;margin:16px 0;
+    font-size:15px;color:#7a4e08;
+  }
+  .tech{
+    background:#eef3fb;
+    border-left:4px solid var(--modra);
+    padding:13px 16px;border-radius:8px;margin:16px 0;
+    font-size:14.5px;color:#26354d;
+  }
+  .tech .nadpis{font-weight:700;display:block;margin-bottom:5px;color:var(--modra-tmava)}
+  code{
+    background:#0e1726;color:#9fd0ff;
+    font-family:"SF Mono",Menlo,Consolas,monospace;
+    font-size:13px;padding:2px 6px;border-radius:5px;
+    white-space:nowrap;
+  }
+  .tech code{background:#dde6f4;color:#0a4fb8}
+
+  /* CENY */
+  .ceny{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}
+  .cena{
+    flex:1 1 220px;
+    border:2px solid #e3ebf7;
+    border-radius:14px;
+    padding:20px;
+    text-align:center;
+    background:#fbfdff;
+  }
+  .cena.odporucane{border-color:var(--modra);background:#f0f6ff;position:relative}
+  .cena.odporucane .odznak{
+    position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    background:var(--modra);color:#fff;font-size:12px;font-weight:600;
+    padding:4px 12px;border-radius:20px;white-space:nowrap;
+  }
+  .cena .suma{font-size:30px;font-weight:700;color:var(--tma);margin:6px 0}
+  .cena .suma span{font-size:15px;font-weight:500;color:var(--siva)}
+  .cena .nazov{font-weight:600;color:var(--modra-tmava)}
+  .cena small{color:var(--siva);display:block;margin-top:8px;font-size:13px}
+
+  /* PROMPT BOX */
+  .prompt{
+    background:var(--tma);
+    color:#dce6f5;
+    border-radius:12px;
+    padding:18px 20px;
+    font-family:"SF Mono",Menlo,Consolas,monospace;
+    font-size:14.5px;
+    line-height:1.6;
+    margin:14px 0;
+    overflow-x:auto;
+  }
+  .prompt .label{color:var(--tyrkys);font-weight:700;display:block;margin-bottom:8px;font-family:inherit}
+
+  /* PATICKA */
+  footer{
+    text-align:center;
+    padding:40px 20px 50px;
+    color:var(--siva);
+    font-size:14px;
+  }
+  footer .cta{
+    display:inline-block;
+    background:linear-gradient(135deg,var(--modra),var(--tyrkys));
+    color:#fff;text-decoration:none;font-weight:600;
+    padding:14px 30px;border-radius:30px;
+    margin-bottom:24px;
+    box-shadow:0 8px 22px rgba(10,108,255,.3);
+  }
+  .checklist{
+    background:var(--karta);max-width:840px;margin:0 auto 30px;
+    border-radius:16px;padding:26px 30px;
+    box-shadow:0 6px 22px rgba(14,23,38,.06);border:1px solid #eaf0fb;
+  }
+  .checklist h2{font-size:22px;margin-bottom:14px}
+  .checklist ol{padding-left:22px}
+  .checklist li{margin:9px 0;color:#33425a}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="snezinka">❄️</span>
+  <div class="znacka">Interný návod</div>
+  <h1>Ako si spraviť vlastný web</h1>
+  <p>Jednoduchý postup pre klimatizérov, ktorí web nikdy nerobili. Krok po kroku, bez programovania — len s pomocou umelej inteligencie.</p>
+</header>
+
+<main>
+
+  <div class="uvod">
+    <p>Dnes už <strong>nemusíš vedieť programovať</strong>, aby si mal pekný web. Stačí ti počítač, trochu trpezlivosti a šikovný AI nástroj, ktorý za teba napíše kód. Ty mu len <strong>vlastnými slovami</strong> povieš, čo chceš — a on to spraví. Tento návod ťa prevedie celým postupom od začiatku až po hotový web na internete.</p>
+  </div>
+
+  <!-- KROK 1 -->
+  <section class="krok">
+    <div class="krok-hlava">
+      <div class="cislo">1</div>
+      <h2>Nainštaluj si Claude do počítača</h2>
+    </div>
+    <p>Základ všetkého je <strong>Claude</strong> — to je tá umelá inteligencia, ktorá ti web napíše. Funguje to tak, že mu napíšeš čo chceš, a on ti rovno vytvorí stránku.</p>
+    <ul>
+      <li>Choď na <a href="https://claude.com" target="_blank" rel="noopener">claude.com</a> a stiahni si aplikáciu do počítača (Windows alebo Mac).</li>
+      <li>Pre tvorbu webov je najlepší <strong>Claude Code</strong> — to je nástroj, ktorý vie priamo vytvárať a upravovať súbory na tvojom počítači.</li>
+      <li>Nainštaluješ ho ako každý iný program — stiahnuť, otvoriť, prihlásiť sa.</li>
+    </ul>
+    <div class="tech">
+      <span class="nadpis">Technické detaily</span>
+      Claude Code beží v termináli a potrebuje nainštalovaný <strong>Node.js</strong> (verzia 18+). Inštalácia je potom jeden príkaz: <code>npm i -g @anthropic-ai/claude-code</code>, spustenie <code>claude</code> v priečinku projektu. Claude pracuje vždy v rámci jedného priečinka (tzv. <em>working directory</em>) — drž jeden web = jeden priečinok. Do koreňa projektu si môžeš dať súbor <code>CLAUDE.md</code>, kam napíšeš kontext (čo je projekt, aké farby, aký štýl) — Claude si ho načíta pri každom spustení a nemusíš sa opakovať.
+    </div>
+    <div class="tip">💡 Funguje to aj cez prehliadač (claude.ai) bez inštalácie, ale lokálny Claude Code má prístup k súborom aj internetu — to oceníš pri nasadzovaní.</div>
+  </section>
+
+  <!-- KROK 2 -->
+  <section class="krok">
+    <div class="krok-hlava">
+      <div class="cislo">2</div>
+      <h2>Plať si predplatné — to je podmienka</h2>
+    </div>
+    <p>Aby Claude poriadne fungoval na tvorbu webov, <strong>musíš mať platené predplatné</strong>. Bezplatná verzia na to nestačí. Ber to ako investíciu do nástroja — podobne ako keď si kúpiš dobrú vŕtačku namiesto lacnej.</p>
+
+    <div class="ceny">
+      <div class="cena">
+        <div class="nazov">Minimum</div>
+        <div class="suma">20&nbsp;€<span>/mes</span></div>
+        <small>Spodná hranica, aby sa s tým vôbec dalo pracovať. Na jednoduchý web stačí.</small>
+      </div>
+      <div class="cena odporucane">
+        <div class="odznak">★ Odporúčané</div>
+        <div class="nazov">Ideál</div>
+        <div class="suma">110&nbsp;€<span>/mes</span></div>
+        <small>Tu už máš dosť priestoru robiť viac webov, blogov a eshop bez obmedzení. Oplatí sa.</small>
+      </div>
+    </div>
+
+    <div class="pozor">⚠️ Bez predplatného sa do toho nepúšťaj — narazíš na limity a budeš frustrovaný. Radšej rovno plať aspoň tých 20 €, ideálne 110 €.</div>
+    <div class="tech">
+      <span class="nadpis">Technické detaily</span>
+      Predplatné (Pro / Max) má limity počítané na <strong>tokeny</strong> v rámci 5‑hodinových okien — pri väčšom webe sa k nim dá priblížiť, vyšší plán = vyššie limity a prístup k najsilnejšiemu modelu (Opus). Alternatíva je platba cez <strong>API kľúč</strong> (platíš za reálnu spotrebu tokenov), ale na bežnú tvorbu webov je paušál predvídateľnejší a lacnejší. Tip: na rutinné úpravy nechaj slabší/rýchlejší model a Opus si šetri na zložitejšie veci — limit ti vydrží dlhšie.
+    </div>
+  </section>
+
+  <!-- KROK 3 -->
+  <section class="krok">
+    <div class="krok-hlava">
+      <div class="cislo">3</div>
+      <h2>Nauč sa základ — ako písať „prompty“</h2>
+    </div>
+    <p><strong>Prompt</strong> je len cudzie slovo pre „pokyn“ — to, čo napíšeš Claudovi. Čím lepšie mu popíšeš, čo chceš, tým lepší výsledok dostaneš. Predstav si, že vysvetľuješ šikovnému učňovi.</p>
+
+    <h3>Zlatý princíp: buď konkrétny</h3>
+    <ul>
+      <li>Povedz <strong>kto si</strong> a <strong>čo robíš</strong> (montáž a servis klimatizácií).</li>
+      <li>Povedz <strong>čo má web obsahovať</strong> (úvod, služby, cenník, kontakt, fotky).</li>
+      <li>Povedz <strong>ako má vyzerať</strong> (moderne, čisto, modré farby, dôveryhodne).</li>
+      <li>Pokojne <strong>uprav po sebe</strong> — napíš „zmeň farbu na zelenú“ alebo „pridaj telefónne číslo“.</li>
+    </ul>
+
+    <div class="prompt">
+      <span class="label">Príklad dobrého promptu:</span>
+      „Sprav mi jednoduchý web pre moju firmu na montáž klimatizácií. Volám sa Ján Novák, pôsobím v Žiline. Chcem úvodnú stránku s mojimi službami (montáž, servis, čistenie), cenník, fotky realizácií a kontaktný formulár. Nech to vyzerá moderne a dôveryhodne, v modro-bielych farbách.“
+    </div>
+
+    <div class="tip">💡 Nemusíš to trafiť napoprvé. Pozeraj výsledok a hovor Claudovi, čo zmeniť — „toto je dobré, ale logo daj väčšie a pridaj sekciu s recenziami“. Postupne to vyladíš.</div>
+    <div class="tech">
+      <span class="nadpis">Technické detaily</span>
+      Oplatí sa hneď na začiatku určiť <strong>technológiu</strong> — napríklad „statická stránka v čistom HTML/CSS“ pre vizitku, alebo „Next.js + Tailwind“, ak plánuješ rásť. Pracuj <strong>iteratívne</strong> a v malých krokoch: jedna zmena = jedna požiadavka, výsledok si pozri a až potom pokračuj. Po každej rozumnej etape rob <strong>commit do Gitu</strong> (<code>git commit</code>) — keď niečo pokazíš, vrátiš sa späť. Buď konkrétny aj technicky: „daj to do samostatného súboru <code>styles.css</code>“, „použi <code>flexbox</code>“, „obrázky lazy‑loaduj“. Čím presnejší kontext, tým menej iterácií.
+    </div>
+  </section>
+
+  <!-- KROK 4 -->
+  <section class="krok">
+    <div class="krok-hlava">
+      <div class="cislo">4</div>
+      <h2>Daj web na internet cez Vercel</h2>
+    </div>
+    <p>Keď máš web hotový v počítači, treba ho dostať na internet, aby ho videli aj zákazníci. Na to je ideálny <strong>Vercel</strong> — služba, ktorá tvoj web zverejní zadarmo a za pár minút.</p>
+    <ul>
+      <li>Zaregistruj sa na <a href="https://vercel.com" target="_blank" rel="noopener">vercel.com</a> (kľudne cez Google účet).</li>
+      <li>Poproś Claude, nech ti pomôže web „nasadiť na Vercel“ — prevedie ťa tým.</li>
+      <li>Dostaneš odkaz typu <em>tvojafirma.vercel.app</em>, ktorý môžeš posielať zákazníkom.</li>
+      <li>Neskôr si môžeš dokúpiť vlastnú adresu, napríklad <em>klimatizacie-novak.sk</em>.</li>
+    </ul>
+    <div class="tip">💡 Vercel je na bežný web zadarmo. Platíš až keď máš naozaj veľkú návštevnosť — čo na začiatku riešiť nemusíš.</div>
+    <div class="tech">
+      <span class="nadpis">Technické detaily</span>
+      Najpohodlnejší spôsob je <strong>Git integrácia</strong>: prepojíš repozitár (GitHub/GitLab) a Vercel nasadí pri každom <code>push</code> do vetvy <code>main</code> automaticky. Vetva <code>main</code> = <em>production</em>, ostatné vetvy a pull requesty dostanú vlastnú <em>preview</em> URL — ideálne na testovanie pred ostrým nasadením. Pri statickom HTML nechaj <strong>Framework Preset: Other</strong>, <em>Build Command</em> a <em>Output Directory</em> prázdne — Vercel servíruje súbory z koreňa. Pre frameworky (Next.js, Vite) si preset a build vie zvyčajne oddetegovať sám.
+      <br><br>
+      ⚠️ <strong>Dôležité:</strong> hlavná stránka musí byť presne <code>index.html</code> v koreni repozitára — inak dostaneš <code>404: NOT_FOUND</code>. Tajné kľúče nikdy nedávaj do kódu, ale do <em>Settings → Environment Variables</em>. Bez Gitu vieš nasadiť aj z terminálu cez <code>npx vercel --prod</code>.
+    </div>
+
+    <h3>Ako získať vlastnú adresu (doménu)</h3>
+    <p>Adresa <em>tvojafirma.vercel.app</em> je fajn na začiatok, ale pôsobí amatérsky. Pre firmu sa oplatí <strong>vlastná doména</strong>, napríklad <em>klimatizacie-novak.sk</em> — vyzerá to profesionálne a zákazníci si ju ľahšie zapamätajú.</p>
+    <ul>
+      <li>Doménu si „prenajímaš" na rok. Kúpiš ju u tzv. <strong>registrátora</strong>.</li>
+      <li>Na Slovensku je známy napríklad <a href="https://www.websupport.sk" target="_blank" rel="noopener">websupport.sk</a> — <strong>.sk</strong> doména tam stojí zhruba <strong>30 € ročne</strong>.</li>
+      <li>Existujú aj <strong>lacnejšie varianty</strong> (iní registrátori alebo koncovky ako <em>.com</em>, <em>.eu</em>) — pokojne si porovnaj ceny.</li>
+      <li>Keď doménu máš, treba ju „napojiť" na Vercel. Vo Verceli to nájdeš v <em>Project → Settings → Domains</em>, kde adresu pridáš a Vercel ti ukáže, čo nastaviť u registrátora.</li>
+    </ul>
+    <div class="tip">💡 Nemusíš tomu rozumieť do detailu — povedz Claudovi „kúpil som doménu na websupport.sk a chcem ju napojiť na svoj web na Verceli" a on ťa presne, krok po kroku prevedie celým nastavením.</div>
+    <div class="tech">
+      <span class="nadpis">Technické detaily</span>
+      Napojenie domény je o <strong>DNS záznamoch</strong>. Vercel ti ukáže dve cesty: buď u registrátora nastavíš <code>A</code> záznam na Vercel IP (apex doména ako <code>firma.sk</code>) a <code>CNAME</code> pre <code>www</code> na <code>cname.vercel-dns.com</code>, alebo prepíšeš celé <strong>nameservery</strong> na Vercel. Zmena DNS sa <em>propaguje</em> rádovo minúty až hodiny (kvôli TTL). HTTPS certifikát (Let's Encrypt) vystaví Vercel automaticky po overení domény — nič nekupuješ.
+    </div>
+  </section>
+
+  <!-- KROK 5 -->
+  <section class="krok">
+    <div class="krok-hlava">
+      <div class="cislo">5</div>
+      <h2>Chceš eshop? Pridaj Supabase</h2>
+    </div>
+    <p>Ak chceš predávať klímy alebo náhradné diely priamo cez web, čaká ťa <strong>výrazne väčší krok</strong> než vizitka. Eshop nie je jeden prompt — je to <strong>aplikácia z viacerých prepojených častí</strong>, kde každú treba navrhnúť, otestovať a zabezpečiť. <strong>Supabase</strong> ti dá databázu, prihlasovanie a API, ale logiku obchodu musíš poskladať ty (s Claudom) postupne.</p>
+
+    <h3>Z čoho sa eshop reálne skladá</h3>
+    <ul>
+      <li><strong>Dátový model</strong> — tabuľky <code>products</code>, <code>orders</code>, <code>order_items</code>, <code>customers</code>, väzby medzi nimi, sklad/varianty, DPH.</li>
+      <li><strong>Katalóg a košík</strong> — výpis produktov, detail, košík (stav drž na serveri alebo v <code>localStorage</code>), prepočty cien a množstiev.</li>
+      <li><strong>Účty a prihlasovanie</strong> — Supabase Auth (e‑mail/heslo, prípadne Google), oddelenie zákazníka a administrátora.</li>
+      <li><strong>Platby</strong> — integrácia <strong>Stripe</strong> (alebo GoPay/Comgate pre SK), <em>checkout</em>, spracovanie <em>webhookov</em> o úspešnej platbe na serveri.</li>
+      <li><strong>Objednávkový tok</strong> — vytvorenie objednávky až po potvrdení platby, stavy (nová → zaplatená → odoslaná), e‑mailové notifikácie.</li>
+      <li><strong>Admin a doprava</strong> — správa produktov a objednávok, doprava/poštovné, faktúra, GDPR a obchodné podmienky.</li>
+    </ul>
+
+    <div class="pozor">⚠️ Toto nezvládneš „na jeden prompt". Rátaj s desiatkami iterácií a s tým, že budeš musieť rozumieť, čo Claude vytvoril — najmä pri platbách a bezpečnosti. Najprv si sprav vizitku (kroky 1–4), nauč sa pracovať s Claudom a Vercelom, a eshop stavaj až potom — po častiach, nie naraz.</div>
+
+    <div class="tech">
+      <span class="nadpis">Technické detaily a úskalia</span>
+      Supabase je hostovaný <strong>PostgreSQL</strong> + auto‑generované API, Auth a úložisko. Z frontendu voláš <strong>anon (publishable) kľúč</strong>; <strong>service_role</strong> kľúč patrí len na server (Edge Function / backend), nikdy nie do prehliadača. Kľúče a URL drž v <strong>environment premenných</strong>, nie v kóde.
+      <br><br>
+      Najdôležitejšia (a najčastejšie podcenená) vec je <strong>RLS — Row Level Security</strong>: bez správnych <em>policies</em> má ktokoľvek s anon kľúčom prístup k cudzím objednávkam a údajom. <strong>Ceny a sklad nikdy nepočítaj na frontende</strong> — klient sa dá podviesť; finálnu sumu a dostupnosť over na serveri pred platbou. Stripe potvrdenie spracuj cez <strong>webhook</strong> s overením podpisu (nie „úspech“ z prehliadača). Migrácie databázy verzionuj (SQL migrácie), nie ručné klikanie. A rátaj s testovaním platieb v <em>test mode</em> než pustíš ostré platby.
+    </div>
+  </section>
+
+  <!-- KROK 6 -->
+  <section class="krok">
+    <div class="krok-hlava">
+      <div class="cislo">6</div>
+      <h2>Blogy píš cez AI — ale potom ich „poľudšti“</h2>
+    </div>
+    <p>Blog (články na webe) je super na to, aby ťa našli ľudia na Googli — napríklad článok „Ako často čistiť klimatizáciu“. Claude ti taký článok napíše za pár sekúnd.</p>
+    <p><strong>Dôležité ale je:</strong> AI text vždy po sebe <strong>uprav, aby znel ľudsky</strong>. Surový text z AI býva niekedy strojový a všetci ho už poznajú.</p>
+    <ul>
+      <li>Pridaj <strong>vlastnú skúsenosť</strong> — „raz som u zákazníka videl…“.</li>
+      <li>Vyhoď príliš nabubrené frázy, píš tak, ako naozaj rozprávaš.</li>
+      <li>Pridaj <strong>konkrétne čísla a príklady</strong> z praxe.</li>
+      <li>Prečítaj si to nahlas — ak to znie ako reklamný leták, prepíš to.</li>
+    </ul>
+    <div class="tip">💡 Najlepší recept: AI spraví 80 % práce (kostru a fakty), ty pridáš tých posledných 20 % — svoju osobnosť a skúsenosť. To je presne to, čo zákazníka presvedčí.</div>
+    <div class="tech">
+      <span class="nadpis">Technické detaily (SEO)</span>
+      Aby ťa Google našiel, dolaď <strong>on‑page SEO</strong>: každá stránka nech má unikátny <code>&lt;title&gt;</code> a <code>&lt;meta name="description"&gt;</code>, jeden <code>&lt;h1&gt;</code> a logickú hierarchiu nadpisov. Pridaj <strong>štruktúrované dáta</strong> (<code>JSON‑LD</code> typu <code>LocalBusiness</code>) — pomáha v lokálnom vyhľadávaní. Nezabudni na <code>sitemap.xml</code>, <code>robots.txt</code> a <em>Open Graph</em> tagy (pekný náhľad pri zdieľaní na sociálnych sieťach). Obrázky maj v <code>WebP</code> a s <code>alt</code> textom. Claudovi stačí povedať „dopln SEO meta tagy a JSON‑LD pre lokálnu firmu“.
+    </div>
+  </section>
+
+</main>
+
+<!-- ZHRNUTIE -->
+<div class="checklist">
+  <h2>✅ Rýchle zhrnutie postupu</h2>
+  <ol>
+    <li>Nainštaluj si <strong>Claude</strong> do počítača.</li>
+    <li>Plať predplatné — <strong>min. 20 €</strong>, ideálne <strong>110 €</strong> mesačne.</li>
+    <li>Nauč sa písať jasné <strong>prompty</strong> (konkrétne pokyny).</li>
+    <li>Web zverejni cez <strong>Vercel</strong>.</li>
+    <li>Ak chceš eshop, pridaj <strong>Supabase</strong>.</li>
+    <li>Blogy píš cez AI a vždy ich <strong>poľudšti</strong>.</li>
+  </ol>
+</div>
+
+<footer>
+  <a class="cta" href="https://claude.com" target="_blank" rel="noopener">Začni na claude.com →</a>
+  <p>Návod pre klimatizérov · Web zvládneš aj ty ❄️</p>
+</footer>
+
+</body>
+</html>
